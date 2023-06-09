@@ -9,9 +9,13 @@ export type lineInfo = {
   shadowBlur: number;
 };
 
+export type Vector2 = {
+  x:number; 
+  y:number;
+}
+
 export abstract class Shape {
-  protected xPos = 0;
-  protected yPos = 0;
+  protected position :Vector2 = {x: 0, y: 0}
   protected readonly gridCellSize: number = 0;
   protected readonly context;
   protected noColor = "";
@@ -34,16 +38,26 @@ export abstract class Shape {
     fillColor: string | null,
     lineInfo?: lineInfo
   ) {
-    this.xPos = x;
-    this.yPos = y;
+    this.position.x = x * gridCellSize;
+    this.position.y = y * gridCellSize;
     this.gridCellSize = gridCellSize;
     this.context = ctx;
     this.fillColor = fillColor !== null ? fillColor : this.noColor;
     this.lineInfo = lineInfo !== undefined ? lineInfo : this.lineInfo;
+    
+    if (this.isOutOfBounds(x, y)){
+      this.position.x = 0;
+      this.position.y = 0;
+      console.log("Shape Out of Bounds Setting to x:0 y:0");
+    }
   }
-
-  protected abstract move(x: number, y: number): void;
+  
   abstract draw(): void;
+  
+  public getPosition() : Vector2{
+    return this.position;
+  } 
+  
   public setLineInfo(lineInfo: lineInfo) {
     this.lineInfo = lineInfo !== undefined ? lineInfo : this.lineInfo;
   }
@@ -51,6 +65,13 @@ export abstract class Shape {
     this.fillColor = fillColor;
   }
 
+  isOutOfBounds(x: number, y: number): boolean {
+    return ((x * this.gridCellSize) + this.position.x) > (this.context.canvas.width - this.gridCellSize) ||
+        (x * this.gridCellSize) + this.position.x < 0 ||
+        ((y * this.gridCellSize) + this.position.y) > (this.context.canvas.height - this.gridCellSize) ||
+        (y * this.gridCellSize) + this.position.y < 0;
+  }
+  
   public setMove(dir: Dir) {
     switch (dir) {
       case Dir.UP:
@@ -67,6 +88,15 @@ export abstract class Shape {
         break;
     }
   }
+
+  protected move(x: number, y: number) {
+    if (this.isOutOfBounds(x, y)){
+      return
+    }
+
+    this.position.x += x * this.gridCellSize;
+    this.position.y += y * this.gridCellSize;
+  }
 }
 
 export class Rect extends Shape {
@@ -79,12 +109,7 @@ export class Rect extends Shape {
     this.drawFillRect();
     this.drawStrokeRect();
   }
-
-  protected move(x: number, y: number) {
-    this.xPos += x;
-    this.yPos += y;
-  }
-
+  
   private drawStrokeRect() {
     if (this.lineInfo.lineColor !== this.noColor) {
       this.context.beginPath();
@@ -98,8 +123,8 @@ export class Rect extends Shape {
       this.context.strokeStyle = this.lineInfo.lineColor;
 
       this.context.strokeRect(
-        this.xPos,
-        this.yPos,
+        this.position.x,
+        this.position.y,
         this.gridCellSize,
         this.gridCellSize
       );
@@ -115,8 +140,8 @@ export class Rect extends Shape {
 
       this.context.beginPath();
       this.context.rect(
-        this.xPos,
-        this.yPos,
+        this.position.x,
+        this.position.y,
         this.gridCellSize,
         this.gridCellSize
       );
@@ -127,18 +152,12 @@ export class Rect extends Shape {
 }
 
 export class Circle extends Shape {
-  private xPosOffset = this.gridCellSize / 2;
-  private yPosOffset = this.gridCellSize / 2;
+  private posOffset = this.gridCellSize / 2;
   private gridCellSizeOffset = this.gridCellSize / 2;
   draw(): void {
     this.drawStrokeArc();
   }
-
-  protected move(x: number, y: number) {
-    this.xPos += x;
-    this.yPos += y;
-  }
-
+  
   private drawStrokeArc() {
     if (this.lineInfo.lineColor !== this.noColor) {
       this.context.beginPath();
@@ -150,10 +169,10 @@ export class Circle extends Shape {
         : 0;
       this.context.lineWidth = this.lineInfo.lineWidth;
       this.context.strokeStyle = this.lineInfo.lineColor;
-
+      
       this.context.arc(
-        (this.xPos = this.xPos * this.gridCellSize + this.xPosOffset),
-        (this.yPos = this.yPos * this.gridCellSize + this.yPosOffset),
+        this.position.x + this.posOffset,
+        this.position.y + this.posOffset,
         this.gridCellSizeOffset,
         0,
         2 * Math.PI
@@ -163,7 +182,6 @@ export class Circle extends Shape {
       this.context.fill();
       this.context.closePath();
       this.context.stroke();
-      console.log(`${this.xPos} / ${this.yPos}`);
     }
   }
 }

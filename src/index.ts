@@ -1,14 +1,31 @@
-import { Circle, Rect, Shape } from "./gridBasedDrawShapes.js";
-import { Dir } from "./dir.js";
+import {Circle, Rect, Shape} from "./gridBasedDrawShapes.js";
+import {Dir} from "./dir.js";
 
 const canvas = document.querySelector("canvas");
 const ctx = canvas?.getContext("2d");
+
 const gridCellSize = 25;
-
 const renderTime = 1000;
+let moveDir : Dir = Dir.RIGHT;
 
-const snakeBody: Shape[] = [];
-const apple: Shape = new Circle(1, 1, gridCellSize, ctx!, "red", {
+document.addEventListener("keypress", (e) =>{
+  if (e.key === "a"){
+    moveDir = Dir.LEFT;
+  }
+  if (e.key === "d"){
+    moveDir = Dir.RIGHT;
+  }
+  if (e.key === "w"){
+    moveDir = Dir.UP;
+  }
+  if (e.key === "s"){
+    moveDir = Dir.DOWN;
+  }
+
+})
+
+let snakeBody: Shape[] = [];
+const apple: Shape = new Circle(-1, -1, gridCellSize, ctx!, "red", {
   enableJoinLine: false,
   lineColor: "red",
   lineJoin: undefined,
@@ -31,11 +48,11 @@ function render() {
   // for (let i = 0; i < snakeBody.length; i++) {
   //   snakeBody[i].draw();
   // }
-  console.log("Render");
-  // apple.setMove(Dir.RIGHT);
+  
+  apple.setMove(moveDir);
   apple.draw();
-  // r.draw();
-  // setTimeout(render, renderTime);
+
+  setTimeout(render, renderTime);
 }
 
 render();
