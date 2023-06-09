@@ -1,19 +1,18 @@
-import { Rect, Circle } from "./drawShapes.js";
+import { Circle, Rect } from "./gridBasedDrawShapes.js";
 const canvas = document.querySelector("canvas");
 const ctx = canvas?.getContext("2d");
 const gridCellSize = 25;
-if (ctx != undefined) {
-    ctx.strokeStyle = "white";
-}
-const c = new Circle(50, 50, gridCellSize, ctx, "", {
+const renderTime = 1000;
+const snakeBody = [];
+const apple = new Circle(1, 1, gridCellSize, ctx, "red", {
     enableJoinLine: false,
-    lineColor: "#00a2fc",
+    lineColor: "red",
     lineJoin: undefined,
     lineWidth: 2,
     shadowBlur: 0,
     shadowColor: "blue",
 });
-const r = new Rect(100, 50, gridCellSize, ctx, "", {
+const r = new Rect(gridCellSize, gridCellSize, gridCellSize, ctx, "green", {
     enableJoinLine: false,
     lineColor: "#47ff00",
     lineJoin: undefined,
@@ -21,13 +20,16 @@ const r = new Rect(100, 50, gridCellSize, ctx, "", {
     shadowBlur: 0,
     shadowColor: "blue",
 });
-function testDraw() {
-    // for (let i = 0; i < 100; i++) {
-    r.setFillColor("white");
-    r.draw();
-    c.setFillColor("white");
-    c.draw();
+function render() {
+    ctx?.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    // for (let i = 0; i < snakeBody.length; i++) {
+    //   snakeBody[i].draw();
     // }
+    console.log("Render");
+    // apple.setMove(Dir.RIGHT);
+    apple.draw();
+    // r.draw();
+    // setTimeout(render, renderTime);
 }
-testDraw();
+render();
 //# sourceMappingURL=index.js.map
