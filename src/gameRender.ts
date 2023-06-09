@@ -23,4 +23,4 @@ function render() {
   setTimeout(render, renderTime);
 }
 
-// render();
+render();

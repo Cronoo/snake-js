@@ -15,5 +15,5 @@ function render() {
     apple.draw(ctx);
     setTimeout(render, renderTime);
 }
-// render();
+render();
 //# sourceMappingURL=gameRender.js.map

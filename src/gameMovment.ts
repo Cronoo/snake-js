@@ -28,21 +28,21 @@ export const enum Dir {
 export function moveObject(shape: Shape, gridCellSize: number) {
     switch (moveDir) {
         case Dir.UP:
-            move({x: 0, y: -1}, shape, gridCellSize);
+            forceMovePosition({x: 0, y: -1}, shape, gridCellSize);
             break;
         case Dir.DOWN:
-            move({x: 0, y: 1}, shape, gridCellSize);
+            forceMovePosition({x: 0, y: 1}, shape, gridCellSize);
             break;
         case Dir.LEFT:
-            move({x: -1, y: 0}, shape, gridCellSize);
+            forceMovePosition({x: -1, y: 0}, shape, gridCellSize);
             break;
         case Dir.RIGHT:
-            move({x: 1, y: 0}, shape, gridCellSize);
+            forceMovePosition({x: 1, y: 0}, shape, gridCellSize);
             break;
     }
 }
 
-function move(position: Vector2, shape: Shape, gridCellSize: number) {
+export function forceMovePosition(position: Vector2, shape: Shape, gridCellSize: number) {
     // if (shape.isOutOfBounds(position.x, position.y)){
     //     return
     // }

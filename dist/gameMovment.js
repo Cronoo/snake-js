@@ -16,20 +16,20 @@ document.addEventListener("keypress", (e) => {
 export function moveObject(shape, gridCellSize) {
     switch (moveDir) {
         case 0 /* Dir.UP */:
-            move({ x: 0, y: -1 }, shape, gridCellSize);
+            forceMovePosition({ x: 0, y: -1 }, shape, gridCellSize);
             break;
         case 1 /* Dir.DOWN */:
-            move({ x: 0, y: 1 }, shape, gridCellSize);
+            forceMovePosition({ x: 0, y: 1 }, shape, gridCellSize);
             break;
         case 2 /* Dir.LEFT */:
-            move({ x: -1, y: 0 }, shape, gridCellSize);
+            forceMovePosition({ x: -1, y: 0 }, shape, gridCellSize);
             break;
         case 3 /* Dir.RIGHT */:
-            move({ x: 1, y: 0 }, shape, gridCellSize);
+            forceMovePosition({ x: 1, y: 0 }, shape, gridCellSize);
             break;
     }
 }
-function move(position, shape, gridCellSize) {
+export function forceMovePosition(position, shape, gridCellSize) {
     // if (shape.isOutOfBounds(position.x, position.y)){
     //     return
     // }
