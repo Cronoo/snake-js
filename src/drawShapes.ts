@@ -11,6 +11,8 @@ export type lineInfo = {
 
 export abstract class Shape {
   protected position :Vector2 = {x: 0, y: 0}
+  protected lastPosition :Vector2 = {x: 0, y: 0}
+  protected dimension : Vector2 = {x: 0, y: 0};
   protected noColor = "";
   protected fillColor = this.noColor;
 
@@ -32,14 +34,24 @@ export abstract class Shape {
   }
   
   abstract draw(context: CanvasRenderingContext2D): void;
+  public getDimensions() : Vector2{
+    return this.dimension
+  };
   
-  public getPosition() : Vector2{
+  public getCurrentPosition() : Vector2{
     return this.position;
-  } 
+  }
   
-  public setPosition(position : Vector2){
-    this.position.x = position.x;
-    this.position.y = position.y;
+  public getLastPosition() : Vector2{
+    return this.lastPosition;
+  }
+
+  public setCurrentPosition(position : Vector2){
+    if (this.lastPosition.y !== this.position.y ||
+        this.lastPosition.x !== this.position.x){
+      this.lastPosition = this.position;
+    }
+    this.position = position;
   }
   
   public setLineInfo(lineInfo: lineInfo) {
@@ -51,25 +63,23 @@ export abstract class Shape {
 }
 
 export class Rect extends Shape {
-  private width = 0;
-  private height = 0;
   
   constructor(
-      xPos: number,
-      yPos: number,
-      width : number,
-      height : number,
+      position : Vector2,
+      dimension : Vector2,
       fillColor: string | null,
       lineInfo?: lineInfo
   )
   {
     super( fillColor, lineInfo);
-    this.position.x = xPos * width;
-    this.position.y = yPos * height;
-    this.width = width;
-    this.height = height;
+    this.setCurrentPosition({
+      x: position.x * dimension.x,
+      y: position.y * dimension.y
+    })
+    
+    this.dimension = dimension;
   }
-
+  
   draw(context: CanvasRenderingContext2D): void {
     if (context === undefined) {
       console.log("ERROR NO CANVAS CONTEXT ON SHAPE");
@@ -95,8 +105,8 @@ export class Rect extends Shape {
       context.strokeRect(
         this.position.x,
         this.position.y,
-        this.width,
-        this.height
+          this.dimension.x,
+          this.dimension.y
       );
 
       context.closePath();
@@ -112,30 +122,31 @@ export class Rect extends Shape {
       context.rect(
         this.position.x,
         this.position.y,
-          this.width,
-          this.height
+          this.dimension.x,
+          this.dimension.y
       );
       context.closePath();
       context.fill();
     }
   }
-
 }
 
 export class Circle extends Shape {
-  private size = 0; 
+  
   constructor(
-      xPos: number,
-      yPos: number,
+      position : Vector2,
       size : number,
       fillColor: string | null,
       lineInfo?: lineInfo
   )
   {
     super(fillColor, lineInfo);
-    this.position.x = xPos;// * size;
-    this.position.y = yPos;// * size;
-    this.size = size / 2;
+    this.setCurrentPosition({
+      x: position.x,
+      y: position.y
+    })
+    this.dimension.x = size / 2;
+    this.dimension.y = size / 2;
   }
 
   draw(context: CanvasRenderingContext2D): void{
@@ -153,11 +164,11 @@ export class Circle extends Shape {
         : 0;
       context.lineWidth = this.lineInfo.lineWidth;
       context.strokeStyle = this.lineInfo.lineColor;
-      console.log(this.position);
+
       context.arc(
-        this.position.x + this.size,
-        this.position.y + this.size,
-        this.size,
+        this.position.x + this.dimension.x,
+        this.position.y + this.dimension.x,
+          this.dimension.x,
         0,
         2 * Math.PI
       );

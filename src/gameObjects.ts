@@ -1,12 +1,17 @@
 import {Circle, Rect, Shape} from "./drawShapes.js";
-import {gridCellSize} from "./gameRender.js";
+import {gridCellSize} from "./gameLoop.js";
 import {forceMovePosition} from "./gameMovment.js";
+import {Vector2} from "./gameMath.js";
 
 export let apple: Shape;
 export const snake: Shape[] = [];
 
 export function initObjects(): void {
-    apple = new Circle(0, 0, gridCellSize, "red", {
+    createApple({x: 200, y: 200});
+}
+
+export function createApple(position : Vector2) {
+    apple = new Circle(position, gridCellSize, "red", {
         enableJoinLine: false,
         lineColor: "red",
         lineJoin: undefined,
@@ -14,10 +19,11 @@ export function initObjects(): void {
         shadowBlur: 0,
         shadowColor: "blue"
     });
-    forceMovePosition({x: 1, y: 1},apple, gridCellSize);
-    
+}
+
+export function createSnakeSection(position : Vector2) {
     snake.push(
-        new Rect(0, 0, gridCellSize, gridCellSize, "green", {
+        new Rect(position, {x: gridCellSize, y: gridCellSize}, "green", {
             enableJoinLine: false,
             lineColor: "#47ff00",
             lineJoin: undefined,

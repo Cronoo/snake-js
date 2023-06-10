@@ -1,5 +1,7 @@
 export class Shape {
     position = { x: 0, y: 0 };
+    lastPosition = { x: 0, y: 0 };
+    dimension = { x: 0, y: 0 };
     noColor = "";
     fillColor = this.noColor;
     lineInfo = {
@@ -14,12 +16,22 @@ export class Shape {
         this.fillColor = fillColor !== null ? fillColor : this.noColor;
         this.lineInfo = lineInfo !== undefined ? lineInfo : this.lineInfo;
     }
-    getPosition() {
+    getDimensions() {
+        return this.dimension;
+    }
+    ;
+    getCurrentPosition() {
         return this.position;
     }
-    setPosition(position) {
-        this.position.x = position.x;
-        this.position.y = position.y;
+    getLastPosition() {
+        return this.lastPosition;
+    }
+    setCurrentPosition(position) {
+        if (this.lastPosition.y !== this.position.y ||
+            this.lastPosition.x !== this.position.x) {
+            this.lastPosition = this.position;
+        }
+        this.position = position;
     }
     setLineInfo(lineInfo) {
         this.lineInfo = lineInfo !== undefined ? lineInfo : this.lineInfo;
@@ -29,14 +41,13 @@ export class Shape {
     }
 }
 export class Rect extends Shape {
-    width = 0;
-    height = 0;
-    constructor(xPos, yPos, width, height, fillColor, lineInfo) {
+    constructor(position, dimension, fillColor, lineInfo) {
         super(fillColor, lineInfo);
-        this.position.x = xPos * width;
-        this.position.y = yPos * height;
-        this.width = width;
-        this.height = height;
+        this.setCurrentPosition({
+            x: position.x * dimension.x,
+            y: position.y * dimension.y
+        });
+        this.dimension = dimension;
     }
     draw(context) {
         if (context === undefined) {
@@ -56,7 +67,7 @@ export class Rect extends Shape {
                 : 0;
             context.lineWidth = this.lineInfo.lineWidth;
             context.strokeStyle = this.lineInfo.lineColor;
-            context.strokeRect(this.position.x, this.position.y, this.width, this.height);
+            context.strokeRect(this.position.x, this.position.y, this.dimension.x, this.dimension.y);
             context.closePath();
             context.stroke();
         }
@@ -65,19 +76,21 @@ export class Rect extends Shape {
         if (this.fillColor !== this.noColor) {
             context.fillStyle = this.fillColor;
             context.beginPath();
-            context.rect(this.position.x, this.position.y, this.width, this.height);
+            context.rect(this.position.x, this.position.y, this.dimension.x, this.dimension.y);
             context.closePath();
             context.fill();
         }
     }
 }
 export class Circle extends Shape {
-    size = 0;
-    constructor(xPos, yPos, size, fillColor, lineInfo) {
+    constructor(position, size, fillColor, lineInfo) {
         super(fillColor, lineInfo);
-        this.position.x = xPos; // * size;
-        this.position.y = yPos; // * size;
-        this.size = size / 2;
+        this.setCurrentPosition({
+            x: position.x,
+            y: position.y
+        });
+        this.dimension.x = size / 2;
+        this.dimension.y = size / 2;
     }
     draw(context) {
         this.drawStrokeArc(context);
@@ -92,8 +105,7 @@ export class Circle extends Shape {
                 : 0;
             context.lineWidth = this.lineInfo.lineWidth;
             context.strokeStyle = this.lineInfo.lineColor;
-            console.log(this.position);
-            context.arc(this.position.x + this.size, this.position.y + this.size, this.size, 0, 2 * Math.PI);
+            context.arc(this.position.x + this.dimension.x, this.position.y + this.dimension.x, this.dimension.x, 0, 2 * Math.PI);
             context.fillStyle = this.fillColor;
             context.fill();
             context.closePath();
