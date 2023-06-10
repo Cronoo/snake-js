@@ -10,7 +10,7 @@ export class Shape {
         lineJoin: undefined,
         enableJoinLine: false,
         shadowBlur: 0,
-        shadowColor: this.noColor,
+        shadowColor: this.noColor
     };
     constructor(fillColor, lineInfo) {
         this.fillColor = fillColor !== null ? fillColor : this.noColor;
@@ -27,9 +27,11 @@ export class Shape {
         return this.lastPosition;
     }
     setCurrentPosition(position) {
-        if (this.lastPosition.y !== this.position.y ||
-            this.lastPosition.x !== this.position.x) {
-            this.lastPosition = this.position;
+        if (this.lastPosition.y !== this.position.y) {
+            this.lastPosition.y = this.position.y;
+        }
+        if (this.lastPosition.x !== this.position.x) {
+            this.lastPosition.x = this.position.x;
         }
         this.position = position;
     }

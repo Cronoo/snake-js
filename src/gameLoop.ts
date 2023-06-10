@@ -27,9 +27,9 @@ function render() {
   
   ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   for (let i = 0; i < snake.length; i++) {
-    snake[i]?.draw(ctx);
+    snake[i].draw(ctx);
   }
   
-  apple?.draw(ctx);
+  // apple?.draw(ctx);
 }
 

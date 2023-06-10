@@ -2,9 +2,11 @@ import {Vector2} from "./gameMath.js";
 import {Rect, Shape} from "./drawShapes.js";
 import {gridCellSize} from "./gameLoop.js";
 import {createSnakeSection, snake} from "./gameObjects.js";
-import {isOutOfBounds} from "./canvasUtility.js";
+import {isOutOfBoundsOffGrid, isOutOfBoundsOnGrid} from "./canvasUtility.js";
 
 export let moveDir = Dir.RIGHT;
+
+let created : boolean = false;
 
 document.addEventListener("keypress", (e) => {
     if (e.key === "a") {
@@ -21,7 +23,14 @@ document.addEventListener("keypress", (e) => {
     }
     
     if (e.key === "i"){
-        createSnakeSection({x: 5, y: 5})
+        if (!created){
+            createSnakeSection({x: 5, y: 5})
+            created = true;
+        }else {
+            createSnakeSection({x: 0, y: 0})
+        }
+
+        console.log(snake);
     }
 });
 
@@ -54,20 +63,27 @@ export function moveObject(shape: Shape[], gridCellSize: number, context : Canva
 }
 
 export function segmentedMovement(position: Vector2, shape: Shape[], gridCellSize: number, context : CanvasRenderingContext2D){
-    forceMovePosition(position,shape[0],gridCellSize,context)
+    forceMovePositionByGrid(position,shape[0],gridCellSize,context)
     
-    if (shape.length === 1){
-        // console.log(shape.length);
+    if (shape.length < 2){
         return
     }
     
-    for (let i = 1; i < shape.length; i++) {
-        // forceMovePosition(shape[i-1].getLastPosition(),shape[i],gridCellSize)
-    }
+        
+    // for (let i = 1; i < shape.length; i++) {
+    //     let objectToFollowPos = shape[i-1].getCurrentPosition();
+    //     let followingObjectPos = shape[i].getCurrentPosition();
+        
+        // if (objectToFollowPos === followingObjectPos){
+        //     continue;
+        // }
+        
+        shape[1].setCurrentPosition(shape[1-1].getLastPosition())
+    // }
 }
 
-export function forceMovePosition(position: Vector2, shape: Shape, gridCellSize: number, context : CanvasRenderingContext2D) {
-    if (isOutOfBounds(position,shape,context)){
+export function forceMovePositionByGrid(position: Vector2, shape: Shape, gridCellSize: number, context : CanvasRenderingContext2D) {
+    if (isOutOfBoundsOnGrid(position,shape,context)){
         return;
     }
 
@@ -76,4 +92,3 @@ export function forceMovePosition(position: Vector2, shape: Shape, gridCellSize:
         y: shape.getCurrentPosition().y += position.y * gridCellSize
     });
 }
-

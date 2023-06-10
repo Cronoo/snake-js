@@ -1,6 +1,7 @@
-import { createSnakeSection } from "./gameObjects.js";
-import { isOutOfBounds } from "./canvasUtility.js";
+import { createSnakeSection, snake } from "./gameObjects.js";
+import { isOutOfBoundsOnGrid } from "./canvasUtility.js";
 export let moveDir = 3 /* Dir.RIGHT */;
+let created = false;
 document.addEventListener("keypress", (e) => {
     if (e.key === "a") {
         moveDir = 2 /* Dir.LEFT */;
@@ -15,7 +16,14 @@ document.addEventListener("keypress", (e) => {
         moveDir = 1 /* Dir.DOWN */;
     }
     if (e.key === "i") {
-        createSnakeSection({ x: 5, y: 5 });
+        if (!created) {
+            createSnakeSection({ x: 5, y: 5 });
+            created = true;
+        }
+        else {
+            createSnakeSection({ x: 0, y: 0 });
+        }
+        console.log(snake);
     }
 });
 export function moveObject(shape, gridCellSize, context) {
@@ -38,17 +46,21 @@ export function moveObject(shape, gridCellSize, context) {
     }
 }
 export function segmentedMovement(position, shape, gridCellSize, context) {
-    forceMovePosition(position, shape[0], gridCellSize, context);
-    if (shape.length === 1) {
-        // console.log(shape.length);
+    forceMovePositionByGrid(position, shape[0], gridCellSize, context);
+    if (shape.length < 2) {
         return;
     }
-    for (let i = 1; i < shape.length; i++) {
-        // forceMovePosition(shape[i-1].getLastPosition(),shape[i],gridCellSize)
-    }
+    // for (let i = 1; i < shape.length; i++) {
+    //     let objectToFollowPos = shape[i-1].getCurrentPosition();
+    //     let followingObjectPos = shape[i].getCurrentPosition();
+    // if (objectToFollowPos === followingObjectPos){
+    //     continue;
+    // }
+    shape[1].setCurrentPosition(shape[1 - 1].getLastPosition());
+    // }
 }
-export function forceMovePosition(position, shape, gridCellSize, context) {
-    if (isOutOfBounds(position, shape, context)) {
+export function forceMovePositionByGrid(position, shape, gridCellSize, context) {
+    if (isOutOfBoundsOnGrid(position, shape, context)) {
         return;
     }
     shape.setCurrentPosition({

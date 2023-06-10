@@ -1,6 +1,6 @@
 import {Circle, Rect, Shape} from "./drawShapes.js";
 import {gridCellSize} from "./gameLoop.js";
-import {forceMovePosition} from "./gameMovment.js";
+import {forceMovePositionByGrid} from "./gameMovment.js";
 import {Vector2} from "./gameMath.js";
 
 export let apple: Shape;
