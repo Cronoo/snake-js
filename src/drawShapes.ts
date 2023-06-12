@@ -10,6 +10,7 @@ export type lineInfo = {
 };
 
 export abstract class Shape {
+    protected positionChanged = false;
     protected position: Vector2 = {x: 0, y: 0};
     protected lastPosition: Vector2 = {x: 0, y: 0};
     protected dimension: Vector2 = {x: 0, y: 0};
@@ -36,27 +37,39 @@ export abstract class Shape {
     abstract draw(context: CanvasRenderingContext2D): void;
 
     public getDimensions(): Vector2 {
-        return this.dimension;
+        return {...this.dimension};
     };
 
     public getCurrentPosition(): Vector2 {
-        return this.position;
+        return {...this.position};
     }
 
     public getLastPosition(): Vector2 {
-        return this.lastPosition;
+        return {...this.lastPosition};
     }
 
+    public getPositionChanged() : boolean{
+        return this.positionChanged;
+    }
+    
+    public setPositionChanged(changed : boolean){
+        this.positionChanged = changed;
+    }
+    
     public setCurrentPosition(position: Vector2) {
-        if (this.lastPosition.y !== this.position.y) {
-            this.lastPosition.y = this.position.y;
+        if (this.lastPosition.y !== this.position.y ||
+            this.lastPosition.x !== this.position.x) {
+            this.lastPosition = {...this.position};
         }
-
-        if (this.lastPosition.x !== this.position.x) {
-            this.lastPosition.x = this.position.x;
+        
+        if (this.position.y !== position.y ||
+                this.position.x !== position.x) {
+            this.position = {...position};
+            this.setPositionChanged(true)
+            return
         }
-
-        this.position = position;
+        
+        this.setPositionChanged(false);
     }
 
     public setLineInfo(lineInfo: lineInfo) {

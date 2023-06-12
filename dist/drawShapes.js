@@ -1,4 +1,5 @@
 export class Shape {
+    positionChanged = false;
     position = { x: 0, y: 0 };
     lastPosition = { x: 0, y: 0 };
     dimension = { x: 0, y: 0 };
@@ -17,23 +18,33 @@ export class Shape {
         this.lineInfo = lineInfo !== undefined ? lineInfo : this.lineInfo;
     }
     getDimensions() {
-        return this.dimension;
+        return { ...this.dimension };
     }
     ;
     getCurrentPosition() {
-        return this.position;
+        return { ...this.position };
     }
     getLastPosition() {
-        return this.lastPosition;
+        return { ...this.lastPosition };
+    }
+    getPositionChanged() {
+        return this.positionChanged;
+    }
+    setPositionChanged(changed) {
+        this.positionChanged = changed;
     }
     setCurrentPosition(position) {
-        if (this.lastPosition.y !== this.position.y) {
-            this.lastPosition.y = this.position.y;
+        if (this.lastPosition.y !== this.position.y ||
+            this.lastPosition.x !== this.position.x) {
+            this.lastPosition = { ...this.position };
         }
-        if (this.lastPosition.x !== this.position.x) {
-            this.lastPosition.x = this.position.x;
+        if (this.position.y !== position.y ||
+            this.position.x !== position.x) {
+            this.position = { ...position };
+            this.setPositionChanged(true);
+            return;
         }
-        this.position = position;
+        this.setPositionChanged(false);
     }
     setLineInfo(lineInfo) {
         this.lineInfo = lineInfo !== undefined ? lineInfo : this.lineInfo;

@@ -1,27 +1,32 @@
 import { initObjects, snake } from "./gameObjects.js";
 import { moveObject } from "./gameMovment.js";
 const canvas = document.querySelector("canvas");
-const ctx = canvas?.getContext("2d");
+const context = canvas?.getContext("2d");
 export const gridCellSize = 25;
-const refreshTime = 600;
-initObjects();
-gameLoop();
-function gameLoop() {
-    if (ctx === undefined || ctx === null) {
+const renderUpdateTimer = 100;
+const logicUpdateTimer = 1000; // decrees for more difficulty
+function initGame() {
+    if (context === undefined || context === null) {
         return;
     }
-    moveObject(snake, gridCellSize, ctx);
-    render();
-    setTimeout(gameLoop, refreshTime);
+    initObjects(context);
+    renderUpdate(context);
+    logicUpdate(context);
 }
-function render() {
-    if (ctx === undefined || ctx === null) {
-        return;
-    }
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-    for (let i = 0; i < snake.length; i++) {
-        snake[i].draw(ctx);
-    }
-    // apple?.draw(ctx);
+function logicUpdate(context) {
+    moveObject(snake, gridCellSize, context);
+    setTimeout(() => {
+        logicUpdate(context);
+    }, logicUpdateTimer);
 }
+function renderUpdate(context) {
+    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+    for (let i = snake.length - 1; i >= 0; i--) {
+        snake[i].draw(context);
+    }
+    setTimeout(() => {
+        renderUpdate(context);
+    }, renderUpdateTimer);
+}
+initGame();
 //# sourceMappingURL=gameLoop.js.map

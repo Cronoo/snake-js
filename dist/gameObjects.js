@@ -2,11 +2,14 @@ import { Circle, Rect } from "./drawShapes.js";
 import { gridCellSize } from "./gameLoop.js";
 export let apple;
 export const snake = [];
-export function initObjects() {
-    createApple({ x: 200, y: 200 });
+export let objectSpawnPool;
+export function initObjects(context) {
+    createApple();
+    createSnakeSection("green");
+    snake[0].setCurrentPosition({ x: 50, y: 50 });
 }
-export function createApple(position) {
-    apple = new Circle(position, gridCellSize, "red", {
+export function createApple() {
+    apple = new Circle({ x: -500, y: -500 }, gridCellSize, "red", {
         enableJoinLine: false,
         lineColor: "red",
         lineJoin: undefined,
@@ -15,8 +18,8 @@ export function createApple(position) {
         shadowColor: "blue"
     });
 }
-export function createSnakeSection(position) {
-    snake.push(new Rect(position, { x: gridCellSize, y: gridCellSize }, "green", {
+export function createSnakeSection(color) {
+    snake.push(new Rect({ x: -500, y: -500 }, { x: gridCellSize, y: gridCellSize }, color, {
         enableJoinLine: false,
         lineColor: "#47ff00",
         lineJoin: undefined,

@@ -1,7 +1,6 @@
 import { createSnakeSection, snake } from "./gameObjects.js";
 import { isOutOfBoundsOnGrid } from "./canvasUtility.js";
 export let moveDir = 3 /* Dir.RIGHT */;
-let created = false;
 document.addEventListener("keypress", (e) => {
     if (e.key === "a") {
         moveDir = 2 /* Dir.LEFT */;
@@ -16,13 +15,7 @@ document.addEventListener("keypress", (e) => {
         moveDir = 1 /* Dir.DOWN */;
     }
     if (e.key === "i") {
-        if (!created) {
-            createSnakeSection({ x: 5, y: 5 });
-            created = true;
-        }
-        else {
-            createSnakeSection({ x: 0, y: 0 });
-        }
+        createSnakeSection("green");
         console.log(snake);
     }
 });
@@ -47,25 +40,26 @@ export function moveObject(shape, gridCellSize, context) {
 }
 export function segmentedMovement(position, shape, gridCellSize, context) {
     forceMovePositionByGrid(position, shape[0], gridCellSize, context);
+    console.log(shape[0].getPositionChanged());
     if (shape.length < 2) {
         return;
     }
-    // for (let i = 1; i < shape.length; i++) {
-    //     let objectToFollowPos = shape[i-1].getCurrentPosition();
-    //     let followingObjectPos = shape[i].getCurrentPosition();
-    // if (objectToFollowPos === followingObjectPos){
-    //     continue;
-    // }
-    shape[1].setCurrentPosition(shape[1 - 1].getLastPosition());
-    // }
+    for (let i = 1; i < shape.length; i++) {
+        // if new position != current pos change pos
+        if (shape[0].getPositionChanged()) {
+            shape[i].setCurrentPosition(shape[i - 1].getLastPosition());
+        }
+    }
 }
 export function forceMovePositionByGrid(position, shape, gridCellSize, context) {
     if (isOutOfBoundsOnGrid(position, shape, context)) {
+        shape.setPositionChanged(false);
         return;
     }
+    shape.setPositionChanged(true);
     shape.setCurrentPosition({
-        x: shape.getCurrentPosition().x += position.x * gridCellSize,
-        y: shape.getCurrentPosition().y += position.y * gridCellSize
+        x: shape.getCurrentPosition().x + position.x * gridCellSize,
+        y: shape.getCurrentPosition().y + position.y * gridCellSize
     });
 }
 //# sourceMappingURL=gameMovment.js.map
