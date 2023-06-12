@@ -52,6 +52,16 @@ export abstract class Shape {
         return this.positionChanged;
     }
     
+    public setColors(lineColor : string, fillColor : string){
+        if (lineColor.length !== 0){
+            this.lineInfo.lineColor = lineColor;
+        }
+        
+        if (fillColor.length !== 0){
+            this.fillColor = fillColor;
+        }
+    }
+    
     public setPositionChanged(changed : boolean){
         this.positionChanged = changed;
     }
@@ -91,8 +101,8 @@ export class Rect extends Shape {
     ) {
         super(fillColor, lineInfo);
         this.setCurrentPosition({
-            x: position.x * dimension.x,
-            y: position.y * dimension.y
+            x: position.x,// * dimension.x,
+            y: position.y// * dimension.y
         });
 
         this.dimension = dimension;

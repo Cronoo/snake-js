@@ -30,6 +30,14 @@ export class Shape {
     getPositionChanged() {
         return this.positionChanged;
     }
+    setColors(lineColor, fillColor) {
+        if (lineColor.length !== 0) {
+            this.lineInfo.lineColor = lineColor;
+        }
+        if (fillColor.length !== 0) {
+            this.fillColor = fillColor;
+        }
+    }
     setPositionChanged(changed) {
         this.positionChanged = changed;
     }
@@ -57,8 +65,8 @@ export class Rect extends Shape {
     constructor(position, dimension, fillColor, lineInfo) {
         super(fillColor, lineInfo);
         this.setCurrentPosition({
-            x: position.x * dimension.x,
-            y: position.y * dimension.y
+            x: position.x,
+            y: position.y // * dimension.y
         });
         this.dimension = dimension;
     }

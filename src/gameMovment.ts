@@ -1,6 +1,6 @@
 import {Vector2} from "./gameMath.js";
 import {Rect, Shape} from "./drawShapes.js";
-import {gridCellSize} from "./gameLoop.js";
+import {GameOver, gridCellSize} from "./gameLoop.js";
 import {createSnakeSection, snake} from "./gameObjects.js";
 import {isOutOfBoundsOffGrid, isOutOfBoundsOnGrid} from "./canvasUtility.js";
 
@@ -21,8 +21,7 @@ document.addEventListener("keypress", (e) => {
     }
 
     if (e.key === "i") {
-        createSnakeSection("#254d17");
-        console.log(snake);
+        createSnakeSection("#254d17", snake[0].getLastPosition());
     }
 });
 
@@ -70,9 +69,9 @@ export function segmentedMovement(position: Vector2, shape: Shape[], gridCellSiz
 
 export function forceMovePositionByGrid(position: Vector2, shape: Shape, gridCellSize: number, context: CanvasRenderingContext2D) {
     if (isOutOfBoundsOnGrid(position, shape, context)) {
-        shape.setPositionChanged(false);
         return;
     }
+    
     shape.setPositionChanged(true);
     shape.setCurrentPosition({
         x: shape.getCurrentPosition().x + position.x * gridCellSize,

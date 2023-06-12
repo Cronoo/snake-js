@@ -15,8 +15,7 @@ document.addEventListener("keypress", (e) => {
         moveDir = 1 /* Dir.DOWN */;
     }
     if (e.key === "i") {
-        createSnakeSection("#254d17");
-        console.log(snake);
+        createSnakeSection("#254d17", snake[0].getLastPosition());
     }
 });
 export function moveObject(shape, gridCellSize, context) {
@@ -51,7 +50,6 @@ export function segmentedMovement(position, shape, gridCellSize, context) {
 }
 export function forceMovePositionByGrid(position, shape, gridCellSize, context) {
     if (isOutOfBoundsOnGrid(position, shape, context)) {
-        shape.setPositionChanged(false);
         return;
     }
     shape.setPositionChanged(true);
