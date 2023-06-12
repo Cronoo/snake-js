@@ -1,15 +1,22 @@
-import {initObjects, apple, snake} from "./gameObjects.js";
+import {initObjects, apple, snake, createSnakeSection} from "./gameObjects.js";
 import {Dir, moveDir, moveObject, segmentedMovement} from "./gameMovment.js";
-import {Shape} from "./drawShapes";
+import {Shape} from "./drawShapes.js";
 import {isOutOfBoundsOffGrid, isOutOfBoundsOnGrid} from "./canvasUtility.js";
+import {
+    convertObjectWorldPosToGrid,
+    canvasGridCellCount,
+    random,
+    Vector2,
+    canvasGridCellToWorldPos
+} from "./gameMath.js";
 
 const canvas = document.querySelector("canvas");
 const context = canvas?.getContext("2d");
 
 export const gridCellSize = 25;
 const renderUpdateTimer = 100;
-const logicUpdateTimer = 1000; // decrees for more difficulty
-let gameOverAnimtationCounter = 0;
+const logicUpdateTimer = 800; // decrees for more difficulty
+let gameOverAnimationCounter = 0;
 let gameOver = false;
 
 function initGame() {
@@ -19,14 +26,16 @@ function initGame() {
 
     initObjects(context);
     renderUpdate(context);
+    moveApple(context);
     logicUpdate(context);
 }
 
 function logicUpdate(context: CanvasRenderingContext2D) {
 
     if (!gameOver) {
-        moveObject(snake, gridCellSize, context);
         checkForGameOver(context);
+        checkForApplePickup(context);
+        moveObject(snake, gridCellSize, context);
         setTimeout(() => {
             logicUpdate(context);
         }, logicUpdateTimer);
@@ -76,18 +85,37 @@ function checkForGameOver(context: CanvasRenderingContext2D) {
     }
 }
 
+function checkForApplePickup(context: CanvasRenderingContext2D) {
+    if (snake[0].getCurrentPosition().x === apple.getCurrentPosition().x &&
+        snake[0].getCurrentPosition().y === apple.getCurrentPosition().y) {
+        createSnakeSection("#254d17", snake[0].getLastPosition());
+        moveApple(context)
+    }
+}
+
+function moveApple(context: CanvasRenderingContext2D) {
+    if (canvas !== undefined && canvas !== null) {
+        const gridCount: Vector2 = canvasGridCellCount(context, gridCellSize);
+
+        const xPos = random(gridCount.x);
+        const yPos = random(gridCount.y);
+
+        apple.setCurrentPosition(canvasGridCellToWorldPos({x: xPos, y: yPos}, gridCellSize));
+    }
+}
+
 export function GameOver() {
     console.log("GAME OVER!!!");
     gameOverAnimation();
 }
 
 function gameOverAnimation() {
-    if (gameOverAnimtationCounter < snake.length - 1) {
-        snake[gameOverAnimtationCounter].setColors("#910303", "#5d0000");
-        gameOverAnimtationCounter++;
+    if (gameOverAnimationCounter < snake.length - 1) {
+        snake[gameOverAnimationCounter].setColors("#910303", "#5d0000");
+        gameOverAnimationCounter++;
         setTimeout(GameOver, 500);
     } else {
-        snake[gameOverAnimtationCounter].setColors("#910303", "#5d0000");
+        snake[gameOverAnimationCounter].setColors("#910303", "#5d0000");
     }
 }
 

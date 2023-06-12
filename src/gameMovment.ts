@@ -1,4 +1,4 @@
-import {Vector2} from "./gameMath.js";
+import {convertObjectWorldPosToGrid, Vector2} from "./gameMath.js";
 import {Rect, Shape} from "./drawShapes.js";
 import {GameOver, gridCellSize} from "./gameLoop.js";
 import {createSnakeSection, snake} from "./gameObjects.js";
@@ -77,4 +77,7 @@ export function forceMovePositionByGrid(position: Vector2, shape: Shape, gridCel
         x: shape.getCurrentPosition().x + position.x * gridCellSize,
         y: shape.getCurrentPosition().y + position.y * gridCellSize
     });
+
+    // console.log(`${shape.getCurrentPosition().x} / ${shape.getCurrentPosition().y}`);
 }
+

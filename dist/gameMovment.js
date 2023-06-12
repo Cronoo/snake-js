@@ -57,5 +57,6 @@ export function forceMovePositionByGrid(position, shape, gridCellSize, context) 
         x: shape.getCurrentPosition().x + position.x * gridCellSize,
         y: shape.getCurrentPosition().y + position.y * gridCellSize
     });
+    // console.log(`${shape.getCurrentPosition().x} / ${shape.getCurrentPosition().y}`);
 }
 //# sourceMappingURL=gameMovment.js.map

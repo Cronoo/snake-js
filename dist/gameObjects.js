@@ -6,6 +6,7 @@ export let objectSpawnPool;
 export function initObjects(context) {
     createApple();
     createSnakeSection("green", { x: 0, y: 0 });
+    apple.setCurrentPosition({ x: 200, y: 20 });
 }
 export function createApple() {
     apple = new Circle({ x: 0, y: 0 }, gridCellSize, "red", {

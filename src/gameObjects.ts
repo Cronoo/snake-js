@@ -10,6 +10,7 @@ export let objectSpawnPool : Shape;
 export function initObjects(context : CanvasRenderingContext2D): void {
     createApple();
     createSnakeSection("green", {x: 0, y: 0});
+    apple.setCurrentPosition({x: 200, y: 20})
 }
 
 export function createApple() {
