@@ -2,20 +2,20 @@ import { createSnakeSection, snake } from "./gameObjects.js";
 import { isOutOfBoundsOnGrid } from "./canvasUtility.js";
 export let moveDir = 3 /* Dir.RIGHT */;
 document.addEventListener("keypress", (e) => {
-    if (e.key === "a") {
+    if (e.key === "a" && moveDir !== 3 /* Dir.RIGHT */) {
         moveDir = 2 /* Dir.LEFT */;
     }
-    if (e.key === "d") {
+    if (e.key === "d" && moveDir !== 2 /* Dir.LEFT */) {
         moveDir = 3 /* Dir.RIGHT */;
     }
-    if (e.key === "w") {
+    if (e.key === "w" && moveDir !== 1 /* Dir.DOWN */) {
         moveDir = 0 /* Dir.UP */;
     }
-    if (e.key === "s") {
+    if (e.key === "s" && moveDir !== 0 /* Dir.UP */) {
         moveDir = 1 /* Dir.DOWN */;
     }
     if (e.key === "i") {
-        createSnakeSection("green");
+        createSnakeSection("#254d17");
         console.log(snake);
     }
 });
@@ -40,12 +40,10 @@ export function moveObject(shape, gridCellSize, context) {
 }
 export function segmentedMovement(position, shape, gridCellSize, context) {
     forceMovePositionByGrid(position, shape[0], gridCellSize, context);
-    console.log(shape[0].getPositionChanged());
     if (shape.length < 2) {
         return;
     }
     for (let i = 1; i < shape.length; i++) {
-        // if new position != current pos change pos
         if (shape[0].getPositionChanged()) {
             shape[i].setCurrentPosition(shape[i - 1].getLastPosition());
         }
