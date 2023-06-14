@@ -1,8 +1,6 @@
 export function random(maxRandom) {
     return Math.floor(Math.random() * maxRandom) + 1;
 }
-export function convertObjectWorldPosToGrid() {
-}
 export function canvasGridCellCount(context, gridCellSize) {
     const numberOfGridCellsX = (context.canvas.width - gridCellSize) / gridCellSize;
     const numberOfGridCellsY = (context.canvas.height - gridCellSize) / gridCellSize;

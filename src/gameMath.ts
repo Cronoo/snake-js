@@ -7,10 +7,6 @@ export function random(maxRandom: number): number {
     return Math.floor(Math.random() * maxRandom) + 1;
 }
 
-export function convertObjectWorldPosToGrid() {
-
-}
-
 export function canvasGridCellCount(context: CanvasRenderingContext2D, gridCellSize: number): Vector2 {
     const numberOfGridCellsX = (context.canvas.width - gridCellSize) / gridCellSize;
     const numberOfGridCellsY = (context.canvas.height - gridCellSize) / gridCellSize;

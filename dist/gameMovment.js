@@ -2,6 +2,9 @@ import { createSnakeSection, snake } from "./gameObjects.js";
 import { isOutOfBoundsOnGrid } from "./canvasUtility.js";
 export let moveDir = 3 /* Dir.RIGHT */;
 let lastMoveDir;
+export function resetMoveDir() {
+    moveDir = 3 /* Dir.RIGHT */;
+}
 document.addEventListener("keypress", (e) => {
     lastMoveDir = moveDir;
     if (e.key === "a" && moveDir !== 3 /* Dir.RIGHT */) {

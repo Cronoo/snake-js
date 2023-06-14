@@ -8,7 +8,7 @@ export class Shape {
     lineInfo = {
         lineColor: this.noColor,
         lineWidth: 1,
-        lineJoin: undefined,
+        lineJoin: "round",
         enableJoinLine: false,
         shadowBlur: 0,
         shadowColor: this.noColor
@@ -129,8 +129,8 @@ export class Circle extends Shape {
             context.arc(this.position.x + this.dimension.x, this.position.y + this.dimension.x, this.dimension.x, 0, 2 * Math.PI);
             context.fillStyle = this.fillColor;
             context.fill();
-            context.closePath();
             context.stroke();
+            context.closePath();
         }
     }
 }

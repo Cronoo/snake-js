@@ -64,6 +64,11 @@ body{
     background-color: #47ff00;
 }
 
+.btn:focus {
+    outline: none;
+    box-shadow: none;
+}
+
 .oldGameThemeGreen{
     color: black;
 

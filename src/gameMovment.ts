@@ -1,11 +1,14 @@
-import {convertObjectWorldPosToGrid, Vector2} from "./gameMath.js";
-import {Rect, Shape} from "./drawShapes.js";
-import {GameOver, gridCellSize} from "./gameLoop.js";
+import {Vector2} from "./gameMath.js";
+import {Shape} from "./drawShapes.js";
 import {createSnakeSection, snake} from "./gameObjects.js";
-import {isOutOfBoundsOffGrid, isOutOfBoundsOnGrid} from "./canvasUtility.js";
+import {isOutOfBoundsOnGrid} from "./canvasUtility.js";
 
 export let moveDir = Dir.RIGHT;
 let lastMoveDir: Dir;
+
+export function resetMoveDir() {
+    moveDir = Dir.RIGHT;
+}
 
 document.addEventListener("keypress", (e) => {
     lastMoveDir = moveDir;
@@ -57,10 +60,9 @@ export function moveObject(shape: Shape[], gridCellSize: number, context: Canvas
 }
 
 export function segmentedMovement(position: Vector2, shape: Shape[], gridCellSize: number, context: CanvasRenderingContext2D) {
-    if (!(forceMovePositionByGrid(position, shape[0], gridCellSize, context))){
+    if (!(forceMovePositionByGrid(position, shape[0], gridCellSize, context))) {
         return;
     }
-    
 
     if (shape.length < 2) {
         return;
@@ -72,7 +74,7 @@ export function segmentedMovement(position: Vector2, shape: Shape[], gridCellSiz
     }
 }
 
-export function forceMovePositionByGrid(position: Vector2, shape: Shape, gridCellSize: number, context: CanvasRenderingContext2D):boolean {
+export function forceMovePositionByGrid(position: Vector2, shape: Shape, gridCellSize: number, context: CanvasRenderingContext2D): boolean {
     if (isOutOfBoundsOnGrid(position, shape, context)) {
         return false;
     }

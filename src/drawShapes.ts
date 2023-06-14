@@ -3,7 +3,7 @@ import {Vector2} from "./gameMath.js";
 export type LineInfo = {
     lineColor: string;
     lineWidth: number;
-    lineJoin: CanvasLineJoin | undefined;
+    lineJoin: CanvasLineJoin;
     enableJoinLine: boolean;
     shadowColor: string;
     shadowBlur: number;
@@ -27,7 +27,7 @@ export abstract class Shape {
     protected lineInfo: LineInfo = {
         lineColor: this.noColor,
         lineWidth: 1,
-        lineJoin: undefined,
+        lineJoin: "round",
         enableJoinLine: false,
         shadowBlur: 0,
         shadowColor: this.noColor
@@ -209,8 +209,8 @@ export class Circle extends Shape {
 
             context.fillStyle = this.fillColor;
             context.fill();
-            context.closePath();
             context.stroke();
+            context.closePath();
         }
     }
 }
