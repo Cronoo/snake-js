@@ -15,8 +15,8 @@ export function initPlayObjects(context) {
     apple.setCurrentPosition({ x: 200, y: 20 });
 }
 export function InitTextObjects(context) {
-    startGameText = createText({ x: context.canvas.width / 2, y: context.canvas.height / 2 - 60 }, "bold 60px Arial", "Ready");
-    endGameText = createText({ x: context.canvas.width / 2, y: context.canvas.height / 2 - 60 }, "bold 60px Arial", "GAME OVER");
+    startGameText = createText({ x: context.canvas.width / 2, y: context.canvas.height / 2 - 60 }, "bold 60px Metropolis", "Ready");
+    endGameText = createText({ x: context.canvas.width / 2, y: context.canvas.height / 2 - 60 }, "bold 60px Metropolis", "GAME OVER");
 }
 export function createApple() {
     apple = new Circle({ x: 0, y: 0 }, gridCellSize, "#5d0000", {
