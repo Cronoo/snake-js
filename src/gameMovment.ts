@@ -5,8 +5,11 @@ import {createSnakeSection, snake} from "./gameObjects.js";
 import {isOutOfBoundsOffGrid, isOutOfBoundsOnGrid} from "./canvasUtility.js";
 
 export let moveDir = Dir.RIGHT;
+let lastMoveDir: Dir;
 
 document.addEventListener("keypress", (e) => {
+    lastMoveDir = moveDir;
+
     if (e.key === "a" && moveDir !== Dir.RIGHT) {
         moveDir = Dir.LEFT;
     }
@@ -54,12 +57,14 @@ export function moveObject(shape: Shape[], gridCellSize: number, context: Canvas
 }
 
 export function segmentedMovement(position: Vector2, shape: Shape[], gridCellSize: number, context: CanvasRenderingContext2D) {
-    forceMovePositionByGrid(position, shape[0], gridCellSize, context);
+    if (!(forceMovePositionByGrid(position, shape[0], gridCellSize, context))){
+        return;
+    }
+    
 
     if (shape.length < 2) {
         return;
     }
-
     for (let i = 1; i < shape.length; i++) {
         if (shape[0].getPositionChanged()) {
             shape[i].setCurrentPosition(shape[i - 1].getLastPosition());
@@ -67,17 +72,27 @@ export function segmentedMovement(position: Vector2, shape: Shape[], gridCellSiz
     }
 }
 
-export function forceMovePositionByGrid(position: Vector2, shape: Shape, gridCellSize: number, context: CanvasRenderingContext2D) {
+export function forceMovePositionByGrid(position: Vector2, shape: Shape, gridCellSize: number, context: CanvasRenderingContext2D):boolean {
     if (isOutOfBoundsOnGrid(position, shape, context)) {
-        return;
+        return false;
     }
-    
+
+    if (snake.length > 1) {
+        const firstNonHeadSnakeSegment = snake[1].getCurrentPosition();
+        if (firstNonHeadSnakeSegment.x === shape.getCurrentPosition().x + position.x * gridCellSize &&
+            firstNonHeadSnakeSegment.y === shape.getCurrentPosition().y + position.y * gridCellSize) {
+            moveDir = lastMoveDir;
+            return false;
+        }
+    }
+
     shape.setPositionChanged(true);
     shape.setCurrentPosition({
         x: shape.getCurrentPosition().x + position.x * gridCellSize,
         y: shape.getCurrentPosition().y + position.y * gridCellSize
     });
 
+    return true;
     // console.log(`${shape.getCurrentPosition().x} / ${shape.getCurrentPosition().y}`);
 }
 

@@ -134,4 +134,62 @@ export class Circle extends Shape {
         }
     }
 }
+export class Text extends Shape {
+    textInfo = {
+        text: "NO TEXT",
+        textBaselines: "alphabetic",
+        font: "serif 24pt",
+        textAlign: "left"
+    };
+    constructor(position, fillColor, textInfo, lineInfo) {
+        super(fillColor, lineInfo);
+        this.textInfo = textInfo !== undefined ? textInfo : this.textInfo;
+        this.setCurrentPosition({
+            x: position.x,
+            y: position.y // * dimension.y
+        });
+    }
+    draw(context) {
+        if (context === undefined) {
+            console.log("ERROR NO CANVAS CONTEXT ON SHAPE");
+            return;
+        }
+        this.drawFillText(context);
+        this.drawStrokeText(context);
+    }
+    drawStrokeText(context) {
+        if (this.lineInfo.lineColor !== this.noColor) {
+            context.beginPath();
+            context.shadowColor = this.lineInfo.shadowColor;
+            context.shadowBlur = this.lineInfo.shadowBlur;
+            this.lineInfo.lineJoin !== undefined
+                ? (context.lineJoin = this.lineInfo.lineJoin)
+                : 0;
+            context.lineWidth = this.lineInfo.lineWidth;
+            context.strokeStyle = this.lineInfo.lineColor;
+            const fontMetrics = context.measureText(this.textInfo.text);
+            const fontHeight = fontMetrics.fontBoundingBoxAscent + fontMetrics.fontBoundingBoxDescent;
+            context.textBaseline = this.textInfo.textBaselines;
+            context.textAlign = this.textInfo.textAlign;
+            context.font = `${this.textInfo.font}`;
+            context.strokeText(this.textInfo.text, this.position.x, this.position.y + fontHeight);
+            context.closePath();
+            context.stroke();
+        }
+    }
+    drawFillText(context) {
+        if (this.fillColor !== this.noColor) {
+            context.beginPath();
+            context.fillStyle = this.fillColor;
+            const fontMetrics = context.measureText(this.textInfo.text);
+            const fontHeight = fontMetrics.fontBoundingBoxAscent + fontMetrics.fontBoundingBoxDescent;
+            context.textBaseline = this.textInfo.textBaselines;
+            context.textAlign = this.textInfo.textAlign;
+            context.font = `${this.textInfo.font}`;
+            context.fillText(this.textInfo.text, this.position.x, this.position.y + fontHeight);
+            context.closePath();
+            context.fill();
+        }
+    }
+}
 //# sourceMappingURL=drawShapes.js.map

@@ -1,7 +1,9 @@
 import { createSnakeSection, snake } from "./gameObjects.js";
 import { isOutOfBoundsOnGrid } from "./canvasUtility.js";
 export let moveDir = 3 /* Dir.RIGHT */;
+let lastMoveDir;
 document.addEventListener("keypress", (e) => {
+    lastMoveDir = moveDir;
     if (e.key === "a" && moveDir !== 3 /* Dir.RIGHT */) {
         moveDir = 2 /* Dir.LEFT */;
     }
@@ -38,7 +40,9 @@ export function moveObject(shape, gridCellSize, context) {
     }
 }
 export function segmentedMovement(position, shape, gridCellSize, context) {
-    forceMovePositionByGrid(position, shape[0], gridCellSize, context);
+    if (!(forceMovePositionByGrid(position, shape[0], gridCellSize, context))) {
+        return;
+    }
     if (shape.length < 2) {
         return;
     }
@@ -50,13 +54,22 @@ export function segmentedMovement(position, shape, gridCellSize, context) {
 }
 export function forceMovePositionByGrid(position, shape, gridCellSize, context) {
     if (isOutOfBoundsOnGrid(position, shape, context)) {
-        return;
+        return false;
+    }
+    if (snake.length > 1) {
+        const firstNonHeadSnakeSegment = snake[1].getCurrentPosition();
+        if (firstNonHeadSnakeSegment.x === shape.getCurrentPosition().x + position.x * gridCellSize &&
+            firstNonHeadSnakeSegment.y === shape.getCurrentPosition().y + position.y * gridCellSize) {
+            moveDir = lastMoveDir;
+            return false;
+        }
     }
     shape.setPositionChanged(true);
     shape.setCurrentPosition({
         x: shape.getCurrentPosition().x + position.x * gridCellSize,
         y: shape.getCurrentPosition().y + position.y * gridCellSize
     });
+    return true;
     // console.log(`${shape.getCurrentPosition().x} / ${shape.getCurrentPosition().y}`);
 }
 //# sourceMappingURL=gameMovment.js.map

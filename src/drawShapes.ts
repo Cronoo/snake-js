@@ -1,12 +1,19 @@
 import {Vector2} from "./gameMath.js";
 
-export type lineInfo = {
+export type LineInfo = {
     lineColor: string;
     lineWidth: number;
     lineJoin: CanvasLineJoin | undefined;
     enableJoinLine: boolean;
     shadowColor: string;
     shadowBlur: number;
+};
+
+export type TextInfo = {
+    font: string;
+    textAlign: "left" | "center" | "right" | "start" | "end";
+    textBaselines: "top" | "hanging" | "middle" | "alphabetic" | "ideographic" | "bottom";
+    text:string;
 };
 
 export abstract class Shape {
@@ -17,7 +24,7 @@ export abstract class Shape {
     protected noColor = "";
     protected fillColor = this.noColor;
 
-    protected lineInfo: lineInfo = {
+    protected lineInfo: LineInfo = {
         lineColor: this.noColor,
         lineWidth: 1,
         lineJoin: undefined,
@@ -28,7 +35,7 @@ export abstract class Shape {
 
     protected constructor(
         fillColor: string | null,
-        lineInfo?: lineInfo
+        lineInfo?: LineInfo
     ) {
         this.fillColor = fillColor !== null ? fillColor : this.noColor;
         this.lineInfo = lineInfo !== undefined ? lineInfo : this.lineInfo;
@@ -48,41 +55,41 @@ export abstract class Shape {
         return {...this.lastPosition};
     }
 
-    public getPositionChanged() : boolean{
+    public getPositionChanged(): boolean {
         return this.positionChanged;
     }
-    
-    public setColors(lineColor : string, fillColor : string){
-        if (lineColor.length !== 0){
+
+    public setColors(lineColor: string, fillColor: string) {
+        if (lineColor.length !== 0) {
             this.lineInfo.lineColor = lineColor;
         }
-        
-        if (fillColor.length !== 0){
+
+        if (fillColor.length !== 0) {
             this.fillColor = fillColor;
         }
     }
-    
-    public setPositionChanged(changed : boolean){
+
+    public setPositionChanged(changed: boolean) {
         this.positionChanged = changed;
     }
-    
+
     public setCurrentPosition(position: Vector2) {
         if (this.lastPosition.y !== this.position.y ||
             this.lastPosition.x !== this.position.x) {
             this.lastPosition = {...this.position};
         }
-        
+
         if (this.position.y !== position.y ||
-                this.position.x !== position.x) {
+            this.position.x !== position.x) {
             this.position = {...position};
-            this.setPositionChanged(true)
-            return
+            this.setPositionChanged(true);
+            return;
         }
-        
+
         this.setPositionChanged(false);
     }
 
-    public setLineInfo(lineInfo: lineInfo) {
+    public setLineInfo(lineInfo: LineInfo) {
         this.lineInfo = lineInfo !== undefined ? lineInfo : this.lineInfo;
     }
 
@@ -97,7 +104,7 @@ export class Rect extends Shape {
         position: Vector2,
         dimension: Vector2,
         fillColor: string | null,
-        lineInfo?: lineInfo
+        lineInfo?: LineInfo
     ) {
         super(fillColor, lineInfo);
         this.setCurrentPosition({
@@ -165,7 +172,7 @@ export class Circle extends Shape {
         position: Vector2,
         size: number,
         fillColor: string | null,
-        lineInfo?: lineInfo
+        lineInfo?: LineInfo
     ) {
         super(fillColor, lineInfo);
         this.setCurrentPosition({
@@ -204,6 +211,83 @@ export class Circle extends Shape {
             context.fill();
             context.closePath();
             context.stroke();
+        }
+    }
+}
+
+export class Text extends Shape {
+    private textInfo: TextInfo = {
+        text: "NO TEXT",
+        textBaselines: "alphabetic",
+        font: "serif 24pt",
+        textAlign: "left"
+    };
+
+    constructor(
+        position: Vector2,
+        fillColor: string | null,
+        textInfo: TextInfo,
+        lineInfo?: LineInfo
+    ) {
+        super(fillColor, lineInfo);
+        this.textInfo = textInfo !== undefined? textInfo : this.textInfo;
+        this.setCurrentPosition({
+            x: position.x,// * dimension.x,
+            y: position.y// * dimension.y
+        });
+        
+    }
+
+    draw(context: CanvasRenderingContext2D): void {
+        if (context === undefined) {
+            console.log("ERROR NO CANVAS CONTEXT ON SHAPE");
+            return;
+        }
+
+        this.drawFillText(context);
+        this.drawStrokeText(context);
+    }
+
+    private drawStrokeText(context: CanvasRenderingContext2D) {
+        if (this.lineInfo.lineColor !== this.noColor) {
+            context.beginPath();
+
+            context.shadowColor = this.lineInfo.shadowColor;
+            context.shadowBlur = this.lineInfo.shadowBlur;
+            this.lineInfo.lineJoin !== undefined
+                ? (context.lineJoin = this.lineInfo.lineJoin)
+                : 0;
+            context.lineWidth = this.lineInfo.lineWidth;
+            context.strokeStyle = this.lineInfo.lineColor;
+
+            const fontMetrics = context.measureText(this.textInfo.text);
+            const fontHeight = fontMetrics.fontBoundingBoxAscent + fontMetrics.fontBoundingBoxDescent;
+
+            context.textBaseline = this.textInfo.textBaselines;
+            context.textAlign = this.textInfo.textAlign;
+            context.font = `${this.textInfo.font}`;
+            context.strokeText(this.textInfo.text, this.position.x, this.position.y  + fontHeight);
+            
+            context.closePath();
+            context.stroke();
+        }
+    }
+
+    private drawFillText(context: CanvasRenderingContext2D) {
+        if (this.fillColor !== this.noColor) {
+            context.beginPath();
+            context.fillStyle = this.fillColor;
+            
+            const fontMetrics = context.measureText(this.textInfo.text);
+            const fontHeight = fontMetrics.fontBoundingBoxAscent + fontMetrics.fontBoundingBoxDescent;
+            
+            context.textBaseline = this.textInfo.textBaselines;
+            context.textAlign = this.textInfo.textAlign;
+            context.font = `${this.textInfo.font}`;
+            context.fillText(this.textInfo.text, this.position.x, this.position.y + fontHeight);
+
+            context.closePath();
+            context.fill();
         }
     }
 }
