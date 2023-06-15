@@ -21,8 +21,8 @@ export function initPlayObjects(context: CanvasRenderingContext2D): void {
 }
 
 export function InitTextObjects(context: CanvasRenderingContext2D) {
-    startGameText = createText({x: context.canvas.width / 2, y: context.canvas.height / 2 - 60}, "bold 60px Metropolis", "Ready");
-    endGameText = createText({x: context.canvas.width / 2, y: context.canvas.height / 2 - 60}, "bold 60px Metropolis", "GAME OVER");
+    startGameText = createText({x: context.canvas.width / 2, y: context.canvas.height / 2 }, "bold 60px serif", "Ready");
+    endGameText = createText({x: context.canvas.width / 2, y: context.canvas.height / 2 }, "bold 60px serif", "GAME OVER");
 }
 
 export function createApple() {

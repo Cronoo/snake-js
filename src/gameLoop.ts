@@ -46,10 +46,10 @@ startBtn?.addEventListener("mousedown", (e) => {
 });
 
 function playGame() {
-    if (context === undefined || context === null) {
+    if (context === undefined || context === null || startBtn === null) {
         return;
     }
-
+    startBtn.textContent = "Reset";
     reset(context);
     moveApple(context);
     logicUpdate(context);

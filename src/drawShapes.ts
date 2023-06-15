@@ -131,9 +131,7 @@ export class Rect extends Shape {
 
             context.shadowColor = this.lineInfo.shadowColor;
             context.shadowBlur = this.lineInfo.shadowBlur;
-            this.lineInfo.lineJoin !== undefined
-                ? (context.lineJoin = this.lineInfo.lineJoin)
-                : 0;
+            context.lineJoin = this.lineInfo.lineJoin;
             context.lineWidth = this.lineInfo.lineWidth;
             context.strokeStyle = this.lineInfo.lineColor;
 
@@ -193,9 +191,7 @@ export class Circle extends Shape {
 
             context.shadowColor = this.lineInfo.shadowColor;
             context.shadowBlur = this.lineInfo.shadowBlur;
-            this.lineInfo.lineJoin !== undefined
-                ? (context.lineJoin = this.lineInfo.lineJoin)
-                : 0;
+            context.lineJoin = this.lineInfo.lineJoin;
             context.lineWidth = this.lineInfo.lineWidth;
             context.strokeStyle = this.lineInfo.lineColor;
 
@@ -239,7 +235,7 @@ export class Text extends Shape {
     }
 
     draw(context: CanvasRenderingContext2D): void {
-        if (context === undefined) {
+        if (context === undefined || context === null) {
             console.log("ERROR NO CANVAS CONTEXT ON SHAPE");
             return;
         }
@@ -254,19 +250,14 @@ export class Text extends Shape {
 
             context.shadowColor = this.lineInfo.shadowColor;
             context.shadowBlur = this.lineInfo.shadowBlur;
-            this.lineInfo.lineJoin !== undefined
-                ? (context.lineJoin = this.lineInfo.lineJoin)
-                : 0;
+            context.lineJoin = this.lineInfo.lineJoin;
             context.lineWidth = this.lineInfo.lineWidth;
             context.strokeStyle = this.lineInfo.lineColor;
-
-            const fontMetrics = context.measureText(this.textInfo.text);
-            const fontHeight = fontMetrics.fontBoundingBoxAscent + fontMetrics.fontBoundingBoxDescent;
 
             context.textBaseline = this.textInfo.textBaselines;
             context.textAlign = this.textInfo.textAlign;
             context.font = `${this.textInfo.font}`;
-            context.strokeText(this.textInfo.text, this.position.x, this.position.y  + fontHeight);
+            context.strokeText(this.textInfo.text, this.position.x, this.position.y);
             
             context.closePath();
             context.stroke();
@@ -278,13 +269,10 @@ export class Text extends Shape {
             context.beginPath();
             context.fillStyle = this.fillColor;
             
-            const fontMetrics = context.measureText(this.textInfo.text);
-            const fontHeight = fontMetrics.fontBoundingBoxAscent + fontMetrics.fontBoundingBoxDescent;
-            
-            context.textBaseline = this.textInfo.textBaselines;
+           context.textBaseline = this.textInfo.textBaselines;
             context.textAlign = this.textInfo.textAlign;
             context.font = `${this.textInfo.font}`;
-            context.fillText(this.textInfo.text, this.position.x, this.position.y + fontHeight);
+            context.fillText(this.textInfo.text, this.position.x, this.position.y);
 
             context.closePath();
             context.fill();
